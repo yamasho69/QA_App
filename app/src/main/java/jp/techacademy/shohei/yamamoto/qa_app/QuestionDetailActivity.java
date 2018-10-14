@@ -126,23 +126,27 @@ public class QuestionDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        final FloatingActionButton fav = (FloatingActionButton) findViewById(R.id.fav);
+        FloatingActionButton fav = (FloatingActionButton) findViewById(R.id.fav);
         if(user == null){fav.setVisibility(View.INVISIBLE);}
         fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
 
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                //boolean favoriteVerified = user.isFavoriteVerified();
+                String uid = user.getUid();
+                //if(favorite == false){}
                 DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+
+                DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre()));
 
                 Map<String, String> data = new HashMap<String, String>();
 
                 // UID
                 data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                data.put("Favorite",dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
-                show();
+                Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
                 answerRef.setValue(data);
-            }});
+            }
+        });
     }
 }
