@@ -163,6 +163,14 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+       if (user == null) {
+            // ログインしていないとお気に入りは表示しない
+            Menu menu = NavigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.nav_favorite);
+            menuItem.setVisible(false);
+        }
+
         // Firebase
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
