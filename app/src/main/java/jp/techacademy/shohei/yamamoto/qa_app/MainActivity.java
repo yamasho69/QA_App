@@ -166,10 +166,10 @@ public class MainActivity extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
        if (user == null) {
             // ログインしていないとお気に入りは表示しない
-            Menu menu = NavigationView.getMenu();
+            Menu menu = navigationView.getMenu();
             MenuItem menuItem = menu.findItem(R.id.nav_favorite);
-            menuItem.setVisible(false);
-        }
+            navigationView.getMenu().getItem(4).setVisible(false);
+       }
 
         // Firebase
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
