@@ -214,10 +214,7 @@ public class FavoriteActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.nav_favorite) {
-            mToolbar.setTitle("お気に入り");
-            mGenre = 5;
-        }else if(id == R.id.nav_hobby) {
+       if(id == R.id.nav_hobby) {
             mToolbar.setTitle("趣味");
             mGenre = 1;
         } else if (id == R.id.nav_life) {

@@ -1,11 +1,14 @@
 package jp.techacademy.shohei.yamamoto.qa_app;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.nio.channels.Selector;
 import java.util.HashMap;
 
 public class QuestionDetailActivity extends AppCompatActivity {
@@ -22,8 +26,10 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private ListView mListView;
     private Question mQuestion;
     private QuestionDetailListAdapter mAdapter;
-
     private DatabaseReference mAnswerRef;
+    private Image favorite_pressed;
+
+
 
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
@@ -86,6 +92,16 @@ public class QuestionDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FloatingActionButton fav = (FloatingActionButton) findViewById(R.id.fav);
+        if(user == null){fav.setVisibility(View.INVISIBLE);}
+        fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view){
+            }});
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +110,15 @@ public class QuestionDetailActivity extends AppCompatActivity {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 if (user == null) {
+
                     // ログインしていなければログイン画面に遷移させる
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
                 } else {
                     // Questionを渡して回答作成画面を起動する
-                    // TODO:
+                    Intent intent = new Intent(getApplicationContext(), AnswerSendActivity.class);
+                    intent.putExtra("question", mQuestion);
+                    startActivity(intent);
                 }
             }
         });
