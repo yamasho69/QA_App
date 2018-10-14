@@ -60,7 +60,7 @@ public class QuestionSendActivity extends AppCompatActivity implements View.OnCl
         mGenre = extras.getInt("genre");
 
         // UIの準備
-        setTitle("質問作成");
+        if(mGenre != 5){setTitle("質問作成");
 
         mTitleText = (EditText) findViewById(R.id.titleText);
         mBodyText = (EditText) findViewById(R.id.bodyText);
@@ -73,7 +73,7 @@ public class QuestionSendActivity extends AppCompatActivity implements View.OnCl
 
         mProgress = new ProgressDialog(this);
         mProgress.setMessage("投稿中...");
-
+        }
     }
 
     @Override
@@ -102,7 +102,7 @@ public class QuestionSendActivity extends AppCompatActivity implements View.OnCl
                 return;
             }
 
-            // 取得したBimapの長辺を500ピクセルにリサイズする
+            // 取得したBitmapの長辺を500ピクセルにリサイズする
             int imageWidth = image.getWidth();
             int imageHeight = image.getHeight();
             float scale = Math.min((float) 500 / imageWidth, (float) 500 / imageHeight); // (1)

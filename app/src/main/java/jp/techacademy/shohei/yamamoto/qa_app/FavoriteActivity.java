@@ -1,9 +1,6 @@
 package jp.techacademy.shohei.yamamoto.qa_app;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.widget.AdapterView;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -17,6 +14,7 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,7 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity
+public class FavoriteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
