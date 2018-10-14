@@ -163,14 +163,6 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-       if (user == null) {
-            // ログインしていないとお気に入りは表示しない
-            Menu menu = navigationView.getMenu();
-            MenuItem menuItem = menu.findItem(R.id.nav_favorite);
-            navigationView.getMenu().getItem(4).setVisible(false);
-       }
-
         // Firebase
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
@@ -199,6 +191,21 @@ public class MainActivity extends AppCompatActivity
         if(mGenre == 0) {
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             onNavigationItemSelected(navigationView.getMenu().getItem(0));
+        }
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            // ログインしていないとお気に入りは表示しない
+            Menu menu = navigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.nav_favorite);
+            navigationView.getMenu().getItem(4).setVisible(false);
+        }else if(user != null){
+            Menu menu = navigationView.getMenu();
+            MenuItem menuItem = menu.findItem(R.id.nav_favorite);
+            navigationView.getMenu().getItem(4).setVisible(true);
         }
     }
 
