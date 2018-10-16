@@ -89,7 +89,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
             String QuesutionUid = dataSnapshot.getKey();
 
-                // 同じAnswerUidのものが存在しているときは何もしない
+                // ここらへんがおかしい？
                 if (mFavoriteRef != null) {
                     mFavorite = true;
                 }
@@ -171,31 +171,34 @@ public class QuestionDetailActivity extends AppCompatActivity {
             String uid = user.getUid();
             String mQuestionUid = mQuestion.getUid();
             int mGenre = mQuestion.getGenre();
-            if (mFavoriteRef != null) {
-                mFavorite = true;
-                ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
-            }else { ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
-                mFavorite = false;}
+            if (mFavorite == false) {
+                ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
+            }else { ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
+                mFavorite = true;}
             fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(mFavorite == false) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        //boolean favoriteVerified = user.isFavoriteVerified();
                         String uid = user.getUid();
                         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-
                         DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
-
                         Map<String, String> data = new HashMap<String, String>();
-
                         // UID
                         data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                        Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
                         answerRef.setValue(data);
+                        Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
                         mFavorite = true;
                         ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
                     }else{
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        String uid = user.getUid();
+                        DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+                        Map<String, String> data = new HashMap<String, String>();
+                        // UID
+                        data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        answerRef.removeValue();
                         ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
                         mFavorite = false;
                         Snackbar.make(view, "お気に入りを解除しました", Snackbar.LENGTH_LONG).show();
