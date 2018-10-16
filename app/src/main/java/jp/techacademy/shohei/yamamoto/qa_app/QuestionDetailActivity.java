@@ -57,6 +57,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
             Answer answer = new Answer(body, name, uid, answerUid);
             mQuestion.getAnswers().add(answer);
             mAdapter.notifyDataSetChanged();
+
         }
 
         @Override
@@ -130,13 +131,13 @@ public class QuestionDetailActivity extends AppCompatActivity {
         FloatingActionButton fav = (FloatingActionButton) findViewById(R.id.fav);
         if (user == null) {
             fav.setVisibility(View.INVISIBLE);
-        }
-        DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre()));
-        String uid = user.getUid();
-        String mQuestionUid = mQuestion.getUid();
-        int mGenre = mQuestion.getGenre();
-        if (mFavoriteRef == null) {
+        } else {
+            fav.setVisibility(View.VISIBLE);
+            DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+            mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+            String uid = user.getUid();
+            String mQuestionUid = mQuestion.getUid();
+            int mGenre = mQuestion.getGenre();
             fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -146,7 +147,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                     String uid = user.getUid();
                     DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
 
-                    DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre()));
+                    DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
 
                     Map<String, String> data = new HashMap<String, String>();
 
@@ -156,7 +157,6 @@ public class QuestionDetailActivity extends AppCompatActivity {
                     answerRef.setValue(data);
                 }
             });
-        } else {
         }
     }
 }
