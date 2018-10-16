@@ -10,10 +10,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ToggleButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ImageView;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -33,7 +33,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private QuestionDetailListAdapter mAdapter;
     private DatabaseReference mAnswerRef;
     private DatabaseReference mFavoriteRef;
-    private Image favorite_pressed;
+    Boolean favorite_pressed = false;
+    Boolean mFavorite = false;
 
 
     private ChildEventListener mEventListener = new ChildEventListener() {
@@ -63,6 +64,38 @@ public class QuestionDetailActivity extends AppCompatActivity {
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+
+        }
+    };
+
+    public ChildEventListener mFavoriteListener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            HashMap map = (HashMap) dataSnapshot.getValue();
+
+            String QuesutionUid = dataSnapshot.getKey();
+
+                // 同じAnswerUidのものが存在しているときは何もしない
+                if (mFavoriteRef != null) {
+                    mFavorite = true;
+                }
+        }
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
         }
 
         @Override
@@ -138,23 +171,35 @@ public class QuestionDetailActivity extends AppCompatActivity {
             String uid = user.getUid();
             String mQuestionUid = mQuestion.getUid();
             int mGenre = mQuestion.getGenre();
+            if (mFavoriteRef != null) {
+                mFavorite = true;
+                ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
+            }else { ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
+                mFavorite = false;}
             fav.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if(mFavorite == false) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        //boolean favoriteVerified = user.isFavoriteVerified();
+                        String uid = user.getUid();
+                        DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
 
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    //boolean favoriteVerified = user.isFavoriteVerified();
-                    String uid = user.getUid();
-                    DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
 
-                    DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+                        Map<String, String> data = new HashMap<String, String>();
 
-                    Map<String, String> data = new HashMap<String, String>();
-
-                    // UID
-                    data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
-                    answerRef.setValue(data);
+                        // UID
+                        data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
+                        answerRef.setValue(data);
+                        mFavorite = true;
+                        ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
+                    }else{
+                        ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
+                        mFavorite = false;
+                        Snackbar.make(view, "お気に入りを解除しました", Snackbar.LENGTH_LONG).show();
+                    }
                 }
             });
         }
