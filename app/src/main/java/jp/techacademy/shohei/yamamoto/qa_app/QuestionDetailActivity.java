@@ -88,13 +88,13 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private ChildEventListener mFavoriteListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            HashMap map = (HashMap) dataSnapshot.getValue();
-            String Uid = dataSnapshot.getKey();
-            String uid = (String) map.get("uid");
+            dataSnapshot.getValue();
+            String uid = dataSnapshot.getKey();
             if(uid == null){
                 mFavorite = false;
-            }else {mFavorite = true;}
-
+                ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
+            }else {mFavorite = true;
+                ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);}
         }
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -165,14 +165,12 @@ public class QuestionDetailActivity extends AppCompatActivity {
          ChildEventListener mFavoriteListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                HashMap map = (HashMap) dataSnapshot.getValue();
-
-                String questionUid = dataSnapshot.getKey();
-
-                String uid = (String) map.get("uid");
+                dataSnapshot.getValue();
+                String uid = dataSnapshot.getKey();
                 if(uid == null){
-                    mFavorite = false;
-                }else {mFavorite = true;}
+                    ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
+                }else {mFavorite = true;
+                    ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);}
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
