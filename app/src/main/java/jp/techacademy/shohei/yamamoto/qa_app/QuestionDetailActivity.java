@@ -3,17 +3,21 @@ package jp.techacademy.shohei.yamamoto.qa_app;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ImageView;
+
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -32,7 +36,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
     private Question mQuestion;
     private QuestionDetailListAdapter mAdapter;
     private DatabaseReference mAnswerRef;
-    private DatabaseReference mFavoriteRef;
+    public DatabaseReference mFavoriteRef;
     Boolean favorite_pressed = false;
     Boolean mFavorite = false;
 
@@ -81,18 +85,16 @@ public class QuestionDetailActivity extends AppCompatActivity {
 
         }
     };
-
-    public ChildEventListener mFavoriteListener = new ChildEventListener() {
+    private ChildEventListener mFavoriteListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             HashMap map = (HashMap) dataSnapshot.getValue();
+            String Uid = dataSnapshot.getKey();
+            String uid = (String) map.get("uid");
+            if(uid == null){
+                mFavorite = false;
+            }else {mFavorite = true;}
 
-            String QuesutionUid = dataSnapshot.getKey();
-
-                // ここらへんがおかしい？
-                if (mFavoriteRef != null) {
-                    mFavorite = true;
-                }
         }
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -151,10 +153,46 @@ public class QuestionDetailActivity extends AppCompatActivity {
                 }
             }
         });
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
         mAnswerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.AnswersPATH);
         mAnswerRef.addChildEventListener(mEventListener);
+        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+        mFavoriteRef.addChildEventListener(mFavoriteListener);
+
+
+         ChildEventListener mFavoriteListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                HashMap map = (HashMap) dataSnapshot.getValue();
+
+                String questionUid = dataSnapshot.getKey();
+
+                String uid = (String) map.get("uid");
+                if(uid == null){
+                    mFavorite = false;
+                }else {mFavorite = true;}
+            }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
     }
 
     @Override
