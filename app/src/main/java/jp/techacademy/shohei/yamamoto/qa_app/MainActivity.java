@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     // --- ここから ---
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mGenreRef;
+    private DatabaseReference mFavoriteRef;
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
     private QuestionsListAdapter mAdapter;
@@ -233,8 +234,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         if (id == R.id.nav_favorite) {
             mToolbar.setTitle("お気に入り");
-            Intent intent = new Intent(getApplicationContext(),FavoriteActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(getApplicationContext(),FavoriteActivity.class);
+            //startActivity(intent);
+            Favorite();
         } else if (id == R.id.nav_hobby) {
             mToolbar.setTitle("趣味");
             mGenre = 1;
@@ -271,5 +273,12 @@ public class MainActivity extends AppCompatActivity
         }
         mGenreRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
         mGenreRef.addChildEventListener(mEventListener);
+    }
+    private void Favorite(){
+        mQuestionArrayList.clear();
+        mAdapter.setQuestionArrayList(mQuestionArrayList);
+        mListView.setAdapter(mAdapter);
+        mFavoriteRef = mDatabaseReference.child(Const.FavoritePATH);
+        mFavoriteRef.addChildEventListener(mEventListener);
     }
 }
