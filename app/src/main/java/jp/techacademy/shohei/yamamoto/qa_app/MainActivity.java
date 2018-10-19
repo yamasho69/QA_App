@@ -17,6 +17,7 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
     private QuestionsListAdapter mAdapter;
+    private Question mQuestion;
 
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
@@ -119,7 +121,57 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
-    // --- ここまで追加する ---
+    private ChildEventListener mFavoriteListener;
+
+    {
+        mFavoriteListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                dataSnapshot.getValue();
+                String mQuestionUid = mQuestion.getQuestionUid();
+                //String title = (String) map.get("title");
+                //String body = (String) map.get("body");
+                //String name = (String) map.get("name");
+                //String uid = (String) map.get("uid");
+                //String imageString = (String) map.get("image");
+                //byte[] bytes;
+                //if (imageString != null) {
+                //bytes = Base64.decode(imageString, Base64.DEFAULT);
+                //} else {
+                //   bytes = new byte[0];
+                // }
+
+                ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
+                //HashMap answerMap = (HashMap) map.get("answers");
+
+
+                //Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+                //mQuestionArrayList.add(question);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,7 +330,10 @@ public class MainActivity extends AppCompatActivity
         mQuestionArrayList.clear();
         mAdapter.setQuestionArrayList(mQuestionArrayList);
         mListView.setAdapter(mAdapter);
-        mFavoriteRef = mDatabaseReference.child(Const.FavoritePATH);
-        mFavoriteRef.addChildEventListener(mEventListener);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user.getUid();
+        DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+        mFavoriteRef = mDatabaseReference.child(Const.FavoritePATH).child(user.getUid());
+        mFavoriteRef.addChildEventListener(mFavoriteListener);
     }
 }
