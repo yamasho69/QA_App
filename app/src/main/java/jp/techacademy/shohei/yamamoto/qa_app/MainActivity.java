@@ -30,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -149,8 +150,8 @@ public class MainActivity extends AppCompatActivity
                         answerArrayList.add(answer);
                     }
                 }
-                Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                mQuestionArrayList.add(question);
+                mAdapter.setQuestionArrayList(mQuestionArrayList);
+                mListView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
             }
 
@@ -329,13 +330,15 @@ public class MainActivity extends AppCompatActivity
         mGenreRef.addChildEventListener(mEventListener);
     }
     private void Favorite(){
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         mQuestionArrayList.clear();
         mAdapter.setQuestionArrayList(mQuestionArrayList);
         mListView.setAdapter(mAdapter);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = user.getUid();
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-        mFavoriteRef = mDatabaseReference.child(Const.FavoritePATH).child(user.getUid());
+        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(String.valueOf(user.getUid())).child(String.valueOf(mGenre));
         mFavoriteRef.addChildEventListener(mFavoriteListener);
     }
 }
