@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-                HashMap answerMap = (HashMap) map.get("Favorite");
+                HashMap answerMap = (HashMap) map.get("answers");
                 if (answerMap != null) {
                     for (Object key : answerMap.keySet()) {
                         HashMap temp = (HashMap) answerMap.get((String) key);
