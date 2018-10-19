@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private int mGenre = 0;
 
-    // --- ここから ---
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mGenreRef;
     private DatabaseReference mFavoriteRef;
@@ -121,34 +120,37 @@ public class MainActivity extends AppCompatActivity
 
         }
     };
-    private ChildEventListener mFavoriteListener;
-
-    {
+    private ChildEventListener mFavoriteListener;{
         mFavoriteListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                dataSnapshot.getValue();
-                String mQuestionUid = mQuestion.getQuestionUid();
-                //String title = (String) map.get("title");
-                //String body = (String) map.get("body");
-                //String name = (String) map.get("name");
-                //String uid = (String) map.get("uid");
-                //String imageString = (String) map.get("image");
-                //byte[] bytes;
-                //if (imageString != null) {
-                //bytes = Base64.decode(imageString, Base64.DEFAULT);
-                //} else {
-                //   bytes = new byte[0];
-                // }
+                HashMap map = (HashMap) dataSnapshot.getValue();
+                String title = (String) map.get("title");
+                String body = (String) map.get("body");
+                String name = (String) map.get("name");
+                String uid = (String) map.get("uid");
+                String imageString = (String) map.get("image");
+                byte[] bytes;
+                if (imageString != null) {
+                    bytes = Base64.decode(imageString, Base64.DEFAULT);
+                } else {
+                    bytes = new byte[0];
+                }
 
                 ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-                //HashMap answerMap = (HashMap) map.get("answers");
-
-
-                //Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                //mQuestionArrayList.add(question);
+                HashMap answerMap = (HashMap) map.get("Favorite");
+                if (answerMap != null) {
+                    for (Object key : answerMap.keySet()) {
+                        HashMap temp = (HashMap) answerMap.get((String) key);
+                        String answerBody = (String) temp.get("body");
+                        String answerName = (String) temp.get("name");
+                        String answerUid = (String) temp.get("uid");
+                        Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
+                        answerArrayList.add(answer);
+                    }
+                }
+                Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+                mQuestionArrayList.add(question);
                 mAdapter.notifyDataSetChanged();
             }
 
