@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity
     private DatabaseReference mAllRef;
     private ListView mListView;
     private ArrayList<Question> mQuestionArrayList;
+    private ArrayList<String> mFavoriteArrayList;
     private QuestionsListAdapter mAdapter;
     private Question mQuestion;
 
@@ -130,50 +132,31 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 HashMap map = (HashMap) dataSnapshot.getValue();
-                String key =dataSnapshot.getKey();
+                if (map != null) {
+                    for (Object key: map.keySet()) {
+                String QuestionUid =dataSnapshot.getKey();
                 String uid = (String) map.get("uid");
-                mAdapter.setQuestionArrayList(mQuestionArrayList);
-                mListView.setAdapter(mAdapter);
-                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
+                ArrayList<String> mFavoriteArrayList = new ArrayList<>();
+                String string = new String();
+                mFavoriteArrayList.add(QuestionUid);}
+                }
+
                 //for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                        mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
+                mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                DatabaseReference mDataBaseReference = FirebaseDatabase.getInstance().getReference();
-                                HashMap map = (HashMap) dataSnapshot.getValue();
-                                String title = (String) map.get("title");
-                                String body = (String) map.get("body");
-                                String name = (String) map.get("name");
-                                String uid = (String) map.get("uid");
-                                String imageString = (String) map.get("image");
-                                byte[] bytes;
-                                if (imageString != null) {
-                                    bytes = Base64.decode(imageString, Base64.DEFAULT);
-                                } else {
-                                    bytes = new byte[0];
-                                }
-
-                                ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-                                HashMap answerMap = (HashMap) map.get("answers");
-                                if (answerMap != null) {
-
-                                    for (Object key : answerMap.keySet()) {
-                                        HashMap temp = (HashMap) answerMap.get((String) key);
-                                        String answerBody = (String) temp.get("body");
-                                        String answerName = (String) temp.get("name");
-                                        String answerUid = (String) temp.get("uid");
-                                        Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
-                                        answerArrayList.add(answer);
-                                    }
-                                }
-                                Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                                mQuestionArrayList.add(question);
+                                DatabaseReference databataBaseReference = FirebaseDatabase.getInstance().getReference();
+                                //Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+                                //mQuestionArrayList.add(question);
+                                mQuestionArrayList.add(mQuestion);
                                 ArrayList<Question> mQuestionArrayList = new ArrayList<>();
                                 mAdapter.setQuestionArrayList(mQuestionArrayList);
                                 mListView.setAdapter(mAdapter);
                                 mAdapter.notifyDataSetChanged();
-                                mFavoriteRef.addChildEventListener(mEventListener);
+                                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
+                                mContentsRef.addChildEventListener(mEventListener);
                             }
 
                             @Override
