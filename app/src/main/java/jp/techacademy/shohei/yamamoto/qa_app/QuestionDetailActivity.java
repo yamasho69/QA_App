@@ -218,7 +218,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String uid = user.getUid();
                         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
                         Map<String, String> data = new HashMap<String, String>();
                         // UID
                         data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -230,7 +230,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         String uid = user.getUid();
                         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
-                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+                        DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
                         Map<String, String> data = new HashMap<String, String>();
                         // UID
                         data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());

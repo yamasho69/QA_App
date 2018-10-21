@@ -131,14 +131,16 @@ public class MainActivity extends AppCompatActivity
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 HashMap map = (HashMap) dataSnapshot.getValue();
                 String key =dataSnapshot.getKey();
-                String QuestionUid = (String) map.get("questionUid");
                 String uid = (String) map.get("uid");
-                //Integer Genre = (Integer) map.get("genre");
-                DatabaseReference mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
+                mAdapter.setQuestionArrayList(mQuestionArrayList);
+                mListView.setAdapter(mAdapter);
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
                 //for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                DatabaseReference mDataBaseReference = FirebaseDatabase.getInstance().getReference();
                                 HashMap map = (HashMap) dataSnapshot.getValue();
                                 String title = (String) map.get("title");
                                 String body = (String) map.get("body");
@@ -156,12 +158,12 @@ public class MainActivity extends AppCompatActivity
                                 HashMap answerMap = (HashMap) map.get("answers");
                                 if (answerMap != null) {
 
-                                    for (Object mkey : answerMap.keySet()) {
-                                        HashMap temp = (HashMap) answerMap.get((String) mkey);
+                                    for (Object key : answerMap.keySet()) {
+                                        HashMap temp = (HashMap) answerMap.get((String) key);
                                         String answerBody = (String) temp.get("body");
                                         String answerName = (String) temp.get("name");
                                         String answerUid = (String) temp.get("uid");
-                                        Answer answer = new Answer(answerBody, answerName, answerUid, (String) mkey);
+                                        Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
                                         answerArrayList.add(answer);
                                     }
                                 }
