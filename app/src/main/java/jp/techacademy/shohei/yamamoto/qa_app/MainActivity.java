@@ -140,23 +140,43 @@ public class MainActivity extends AppCompatActivity
                 String string = new String();
                 mFavoriteArrayList.add(QuestionUid);}
                 }
-
-                //for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
                 mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                DatabaseReference databataBaseReference = FirebaseDatabase.getInstance().getReference();
-                                //Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                                //mQuestionArrayList.add(question);
-                                mQuestionArrayList.add(mQuestion);
-                                ArrayList<Question> mQuestionArrayList = new ArrayList<>();
-                                mAdapter.setQuestionArrayList(mQuestionArrayList);
-                                mListView.setAdapter(mAdapter);
-                                mAdapter.notifyDataSetChanged();
-                                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(mQuestion));
-                                mContentsRef.addChildEventListener(mEventListener);
+                                HashMap map1 = (HashMap) dataSnapshot.getValue();
+                                for(Object key : map1.keySet()) {
+                                    String QuestionUid =dataSnapshot.getKey();
+                                    if (mFavoriteArrayList.equals(QuestionUid)) {
+                                        String title = (String) map1.get("title");
+                                        String body = (String) map1.get("body");
+                                        String name = (String) map1.get("name");
+                                        String uid = (String) map1.get("uid");
+                                        String imageString = (String) map1.get("image");
+                                        byte[] bytes;
+                                        if (imageString != null) {
+                                            bytes = Base64.decode(imageString, Base64.DEFAULT);
+                                        } else {
+                                            bytes = new byte[0];
+                                        }
+                                        ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
+                                        HashMap answerMap = (HashMap) map1.get("answers");
+                                        if (answerMap != null) {
+                                            for (Object key1 : answerMap.keySet()) {
+                                                HashMap temp = (HashMap) answerMap.get((String) key1);
+                                                String answerBody = (String) temp.get("body");
+                                                String answerName = (String) temp.get("name");
+                                                String answerUid = (String) temp.get("uid");
+                                                Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
+                                                answerArrayList.add(answer);
+                                            }
+                                        }
+                                        Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+                                        mQuestionArrayList.add(question);
+                                        mAdapter.notifyDataSetChanged();
+                                    }
+                                }
                             }
 
                             @Override
