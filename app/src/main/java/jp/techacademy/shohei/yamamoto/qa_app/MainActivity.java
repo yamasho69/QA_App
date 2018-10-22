@@ -3,6 +3,7 @@ package jp.techacademy.shohei.yamamoto.qa_app;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.health.UidHealthStats;
 import android.widget.AdapterView;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -136,8 +137,9 @@ public class MainActivity extends AppCompatActivity
                     for (Object key: map.keySet()) {
                 String QuestionUid =dataSnapshot.getKey();
                 String uid = (String) map.get("uid");
-                ArrayList<String> mFavoriteArrayList = new ArrayList<>();
+                mFavoriteArrayList = new ArrayList<>();
                 String string = new String();
+
                 mFavoriteArrayList.add(QuestionUid);}
                 }
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -147,8 +149,8 @@ public class MainActivity extends AppCompatActivity
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 HashMap map1 = (HashMap) dataSnapshot.getValue();
                                 for(Object key : map1.keySet()) {
-                                    String QuestionUid =dataSnapshot.getKey();
-                                    if (mFavoriteArrayList.equals(QuestionUid)) {
+                                    String QuestionUid =dataSnapshot.child(Const.ContentsPATH).child(String.valueOf(mGenre)).getKey();
+                                    if (mFavoriteArrayList.equals(key)) {
                                         String title = (String) map1.get("title");
                                         String body = (String) map1.get("body");
                                         String name = (String) map1.get("name");
