@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity
                 mFavoriteArrayList.add(QuestionUid);}
                 }
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(s)).addListenerForSingleValueEvent(new ValueEventListener() {
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)); //.child(String.valueOf());
+                        mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 HashMap hashMap = (HashMap) dataSnapshot.getValue();
                                 for(Object key : hashMap.keySet()) {
-
                                     if (mFavoriteArrayList.equals(key)) {
                                         String title = (String) hashMap.get("title");
                                         String body = (String) hashMap.get("body");
