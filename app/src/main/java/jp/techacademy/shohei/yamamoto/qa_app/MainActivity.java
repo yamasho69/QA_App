@@ -141,13 +141,13 @@ public class MainActivity extends AppCompatActivity
                 mFavoriteArrayList.add(QuestionUid);}
                 }
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)); //.child(String.valueOf());
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)); //.child(String.valueOf());　ここでQuesitionUidを指定するには？
                         mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 HashMap hashMap = (HashMap) dataSnapshot.getValue();
                                 for(Object key : hashMap.keySet()) {
-                                    if (mFavoriteArrayList.equals(key)) {
+                                    if (mFavoriteArrayList.contains(key)) {
                                         String title = (String) hashMap.get("title");
                                         String body = (String) hashMap.get("body");
                                         String name = (String) hashMap.get("name");
