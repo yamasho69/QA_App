@@ -137,25 +137,22 @@ public class MainActivity extends AppCompatActivity
                     for (Object key: map.keySet()) {
                 String QuestionUid =dataSnapshot.getKey();
                 String uid = (String) map.get("uid");
-                mFavoriteArrayList = new ArrayList<>();
                 String string = new String();
-
                 mFavoriteArrayList.add(QuestionUid);}
                 }
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
-                mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)).child(String.valueOf(s)).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                HashMap map1 = (HashMap) dataSnapshot.getValue();
-                                for(Object key : map1.keySet()) {
-                                    String QuestionUid =dataSnapshot.child(Const.ContentsPATH).child(String.valueOf(mGenre)).getKey();
+                                HashMap hashMap = (HashMap) dataSnapshot.getValue();
+                                for(Object key : hashMap.keySet()) {
+
                                     if (mFavoriteArrayList.equals(key)) {
-                                        String title = (String) map1.get("title");
-                                        String body = (String) map1.get("body");
-                                        String name = (String) map1.get("name");
-                                        String uid = (String) map1.get("uid");
-                                        String imageString = (String) map1.get("image");
+                                        String title = (String) hashMap.get("title");
+                                        String body = (String) hashMap.get("body");
+                                        String name = (String) hashMap.get("name");
+                                        String uid = (String) hashMap.get("uid");
+                                        String imageString = (String) hashMap.get("image");
                                         byte[] bytes;
                                         if (imageString != null) {
                                             bytes = Base64.decode(imageString, Base64.DEFAULT);
@@ -163,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                                             bytes = new byte[0];
                                         }
                                         ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-                                        HashMap answerMap = (HashMap) map1.get("answers");
+                                        HashMap answerMap = (HashMap) hashMap.get("answers");
                                         if (answerMap != null) {
                                             for (Object key1 : answerMap.keySet()) {
                                                 HashMap temp = (HashMap) answerMap.get((String) key1);
@@ -373,6 +370,7 @@ public class MainActivity extends AppCompatActivity
         mListView.setAdapter(mAdapter);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+        mFavoriteArrayList = new ArrayList<>();
         mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(String.valueOf(user.getUid()));
         mFavoriteRef.addChildEventListener(mFavoriteListener);
     }
