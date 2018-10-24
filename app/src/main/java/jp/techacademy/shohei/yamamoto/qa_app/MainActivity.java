@@ -141,49 +141,53 @@ public class MainActivity extends AppCompatActivity
                 mFavoriteArrayList.add(QuestionUid);}
                 }
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre)); //.child(String.valueOf());　ここでQuesitionUidを指定するには？
-                        mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                HashMap hashMap = (HashMap) dataSnapshot.getValue();
-                                for(Object key : hashMap.keySet()) {
-                                    if (mFavoriteArrayList.contains(key)) {
-                                        String title = (String) hashMap.get("title");
-                                        String body = (String) hashMap.get("body");
-                                        String name = (String) hashMap.get("name");
-                                        String uid = (String) hashMap.get("uid");
-                                        String imageString = (String) hashMap.get("image");
-                                        byte[] bytes;
-                                        if (imageString != null) {
-                                            bytes = Base64.decode(imageString, Base64.DEFAULT);
-                                        } else {
-                                            bytes = new byte[0];
-                                        }
-                                        ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
-                                        HashMap answerMap = (HashMap) hashMap.get("answers");
-                                        if (answerMap != null) {
-                                            for (Object key1 : answerMap.keySet()) {
-                                                HashMap temp = (HashMap) answerMap.get((String) key1);
-                                                String answerBody = (String) temp.get("body");
-                                                String answerName = (String) temp.get("name");
-                                                String answerUid = (String) temp.get("uid");
-                                                Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
-                                                answerArrayList.add(answer);
-                                            }
-                                        }
-                                        Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
-                                        mQuestionArrayList.add(question);
-                                        mAdapter.notifyDataSetChanged();
+                for (mGenre = 1; mGenre <= 4; mGenre++) {
+                mContentsRef = mDatabaseReference.child(Const.ContentsPATH).child(String.valueOf(mGenre));
+                //.child(String.valueOf());　ここでQuesitionUidを指定するには？
+                    mContentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            //for (mGenre = 1; mGenre <= 4; mGenre++) {
+                            HashMap hashMap = (HashMap) dataSnapshot.getValue();
+                            for (Object key : hashMap.keySet()) {
+                                if (mFavoriteArrayList.contains(key)) {
+                                    String title = (String) ((HashMap) hashMap.get(key)).get("title");
+                                    String body = (String) ((HashMap) hashMap.get(key)).get("body");
+                                    String name = (String) ((HashMap) hashMap.get(key)).get("name");
+                                    String uid = (String) ((HashMap) hashMap.get(key)).get("uid");
+                                    String imageString = (String) ((HashMap) hashMap.get(key)).get("image");
+                                    byte[] bytes;
+                                    if (imageString != null) {
+                                        bytes = Base64.decode(imageString, Base64.DEFAULT);
+                                    } else {
+                                        bytes = new byte[0];
                                     }
+                                    ArrayList<Answer> answerArrayList = new ArrayList<Answer>();
+                                    HashMap answerMap = (HashMap) hashMap.get("answers");
+                                    if (answerMap != null) {
+                                        for (Object key1 : answerMap.keySet()) {
+                                            HashMap temp = (HashMap) answerMap.get((String) key1);
+                                            String answerBody = (String) temp.get("body");
+                                            String answerName = (String) temp.get("name");
+                                            String answerUid = (String) temp.get("uid");
+                                            Answer answer = new Answer(answerBody, answerName, answerUid, (String) key);
+                                            answerArrayList.add(answer);
+                                        }
+                                    }
+                                    Question question = new Question(title, body, name, uid, dataSnapshot.getKey(), mGenre, bytes, answerArrayList);
+                                    mQuestionArrayList.add(question);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             }
+                        }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
-                    }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }       }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -205,6 +209,7 @@ public class MainActivity extends AppCompatActivity
             }
         };
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
