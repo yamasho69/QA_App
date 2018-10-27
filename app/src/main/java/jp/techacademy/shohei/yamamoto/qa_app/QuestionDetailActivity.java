@@ -155,13 +155,13 @@ public class QuestionDetailActivity extends AppCompatActivity {
             }
         });
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = user.getUid();
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
+        if(user != null){
+        String uid = user.getUid();
+        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
+        mFavoriteRef.addChildEventListener(mFavoriteListener);}
         mAnswerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.AnswersPATH);
         mAnswerRef.addChildEventListener(mEventListener);
-        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
-        mFavoriteRef.addChildEventListener(mFavoriteListener);
-
 
          ChildEventListener mFavoriteListener = new ChildEventListener() {
             @Override

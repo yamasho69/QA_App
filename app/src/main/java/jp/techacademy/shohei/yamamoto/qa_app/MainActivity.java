@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private Toolbar mToolbar;
-    private int mGenre = 0;
+    public static int mGenre = 0;
     private DatabaseReference mDatabaseReference;
     private DatabaseReference mGenreRef;
     private DatabaseReference mFavoriteRef;
@@ -289,7 +289,11 @@ public class MainActivity extends AppCompatActivity
         mQuestionArrayList.clear();
         mAdapter.setQuestionArrayList(mQuestionArrayList);
         mListView.setAdapter(mAdapter);
-        if(mGenre == 5){Favorite ();}
+        if(user == null && mGenre == 5){
+            mGenre = 1;
+            mToolbar.setTitle("趣味");
+            Genre ();}
+        else  if(mGenre == 5){Favorite ();}
         else{Genre ();}
     }
 
