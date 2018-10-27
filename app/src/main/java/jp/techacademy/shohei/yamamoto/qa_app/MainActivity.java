@@ -1,5 +1,6 @@
 package jp.techacademy.shohei.yamamoto.qa_app;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -285,6 +286,11 @@ public class MainActivity extends AppCompatActivity
             MenuItem menuItem = menu.findItem(R.id.nav_favorite);
             navigationView.getMenu().getItem(4).setVisible(true);
         }
+        mQuestionArrayList.clear();
+        mAdapter.setQuestionArrayList(mQuestionArrayList);
+        mListView.setAdapter(mAdapter);
+        if(mGenre == 5){Favorite ();}
+        else{Genre ();}
     }
 
     @Override
@@ -304,6 +310,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -313,6 +320,7 @@ public class MainActivity extends AppCompatActivity
             mToolbar.setTitle("お気に入り");
             //Intent intent = new Intent(getApplicationContext(),FavoriteActivity.class);
             //startActivity(intent);
+            mGenre = 5;
             Favorite();
         } else if (id == R.id.nav_hobby) {
             mToolbar.setTitle("趣味");
@@ -337,6 +345,8 @@ public class MainActivity extends AppCompatActivity
     public void Genre() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.VISIBLE);
 
         // --- ここから ---
         // 質問のリストをクリアしてから再度Adapterにセットし、AdapterをListViewにセットし直す
@@ -355,7 +365,8 @@ public class MainActivity extends AppCompatActivity
     private void Favorite() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
-
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
         // --- ここから ---
         // 質問のリストをクリアしてから再度Adapterにセットし、AdapterをListViewにセットし直す
         mQuestionArrayList.clear();
