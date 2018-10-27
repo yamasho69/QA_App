@@ -133,6 +133,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
         mListView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +159,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
         DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
         mAnswerRef = dataBaseReference.child(Const.ContentsPATH).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid()).child(Const.AnswersPATH);
         mAnswerRef.addChildEventListener(mEventListener);
-        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
+        mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
         mFavoriteRef.addChildEventListener(mFavoriteListener);
 
 
@@ -205,8 +206,8 @@ public class QuestionDetailActivity extends AppCompatActivity {
             DatabaseReference dataBaseReference = FirebaseDatabase.getInstance().getReference();
             mFavoriteRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(String.valueOf(mQuestion.getGenre())).child(mQuestion.getQuestionUid());
             String uid = user.getUid();
-            String mQuestionUid = mQuestion.getUid();
-            int mGenre = mQuestion.getGenre();
+            final String mQuestionUid = mQuestion.getUid ();
+            final int mGenre = mQuestion.getGenre ();
             if (mFavorite == false) {
                 ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
             }else { ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite_pressed);
@@ -221,7 +222,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                         DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
                         Map<String, String> data = new HashMap<String, String>();
                         // UID
-                        data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        data.put("genre", String.valueOf(mQuestion.getGenre ()));
                         answerRef.setValue(data);
                         Snackbar.make(view, "お気に入りに登録しました", Snackbar.LENGTH_LONG).show();
                         mFavorite = true;
@@ -233,7 +234,7 @@ public class QuestionDetailActivity extends AppCompatActivity {
                         DatabaseReference answerRef = dataBaseReference.child(Const.FavoritePATH).child(user.getUid()).child(mQuestion.getQuestionUid());
                         Map<String, String> data = new HashMap<String, String>();
                         // UID
-                        data.put("uid", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        data.put("genre", FirebaseAuth.getInstance().getCurrentUser().getUid());
                         answerRef.removeValue();
                         ((ImageView) findViewById(R.id.fav)).setImageResource(R.drawable.favorite);
                         mFavorite = false;
